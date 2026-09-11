@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vet DSH Plugin"
+  short_description: "Review an AllDSH-listed plugin read-only before installing"
+  default_prompt: "Use $vet-dsh-plugin to review this DSH plugin before I install it."

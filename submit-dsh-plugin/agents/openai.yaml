@@ -1,0 +1,4 @@
+interface:
+  display_name: "Submit DSH Plugin"
+  short_description: "Prepare a DSH plugin listing submission for AllDSH"
+  default_prompt: "Use $submit-dsh-plugin to prepare a listing for my DSH plugin repository."

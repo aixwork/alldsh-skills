@@ -1,0 +1,30 @@
+name: verify
+
+# The failure modes this repository actually has are drift between the three
+# copies of the catalog client, a stale manifest, and a frontmatter name that no
+# longer matches the directory an agent installs. scripts/verify.sh checks all
+# of them and needs nothing but bash and python3.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Verify skills
+        run: bash scripts/verify.sh
+      - name: Check the catalog client against the live catalog
+        # Non-blocking: this step needs the deployed /catalog.json endpoint, so a
+        # network hiccup or a schema change on the site should surface as a
+        # warning rather than fail a change to the skills themselves.
+        continue-on-error: true
+        run: python3 find-dsh-plugins/scripts/alldsh_catalog.py --taxonomy > /tmp/taxonomy.json
+      - name: Install into a scratch directory
+        run: bash install.sh --dir "$RUNNER_TEMP/skills" --force
