@@ -17,7 +17,7 @@ These skills let an agent ask that question directly instead of scraping pages.
 | --- | --- | --- |
 | `find-dsh-plugins` | Turns a capability request into a short ranked shortlist from the AllDSH catalog, with the install command and verification level of each match. | `Use $find-dsh-plugins to find DSH plugins for reading screenshots.` |
 | `vet-dsh-plugin` | Read-only pre-install review of one listed plugin: what the listing checked, what it did not, and what the repository does at a pinned commit. | `Use $vet-dsh-plugin to review liustack/modlens before I install it.` |
-| `submit-dsh-plugin` | Checks a repository against the AllDSH review checklist and produces listing-shaped material for a submission or a correction. | `Use $submit-dsh-plugin to prepare a listing for https://github.com/owner/repo.` |
+| `submit-dsh-plugin` | Checks a repository against the AllDSH review checklist, produces listing-shaped material, and files the submission through the intake API — review stays human and public. | `Use $submit-dsh-plugin to submit https://github.com/owner/repo for listing.` |
 
 All three read one catalog. None of them falls back to GitHub search, web
 search, npm or another marketplace: a bounded index that widens its own sources

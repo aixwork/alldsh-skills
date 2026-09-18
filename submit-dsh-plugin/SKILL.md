@@ -1,18 +1,19 @@
 ---
 name: submit-dsh-plugin
-description: Prepare a DeepSeek Harness plugin repository for submission to the AllDSH directory, or correct an existing listing, by checking the repository against the review checklist and producing the exact fields and listing text a reviewer needs. Use when someone wants their plugin listed, asks what a submission must contain, or needs a listing corrected (提交插件、收录、上架、提交到 AllDSH).
+description: Prepare a DeepSeek Harness plugin repository for submission to the AllDSH directory, or correct an existing listing, by checking the repository against the review checklist, producing the exact fields and listing text a reviewer needs, and filing the submission through the intake API. Use when someone wants their plugin listed, asks what a submission must contain, or needs a listing corrected (提交插件、收录、上架、提交到 AllDSH).
 license: MIT. See LICENSE
 metadata:
   author: AllDSH
-  version: "1.0.0"
+  version: "1.1.0"
   homepage: https://www.alldsh.com/skills/
 ---
 
-# Prepare an AllDSH submission
+# Prepare and file an AllDSH submission
 
-Turn a repository into either a new-listing request or a correction. AllDSH
-review is human: this skill assembles the material and checks the mechanical
-parts, it does not publish anything.
+Turn a repository into either a new-listing request or a correction, and file
+it. AllDSH review is human and happens publicly in a submissions issue, but
+the intake is an API: this skill assembles the material, checks the mechanical
+parts, and files the submission. It does not publish anything itself.
 
 ## Check whether it is already listed
 
@@ -92,16 +93,41 @@ releases, and any credential or endpoint requirement.>
 review. Submit them at their defaults; do not raise them because the repository
 looks tidy.
 
-## Hand off
+## File the submission
 
-Give the author the five things AllDSH asks for — repository URL, one-sentence
-description under 160 characters, exact install command, the category that fits
-best, and notes for reviewers (credentials, paid endpoints, unusual permissions)
-— and point them at https://www.alldsh.com/submit/ and
-https://www.alldsh.com/contact/. Say that review usually happens within a week
-and that a missing checklist item gets the submission returned with a note
-rather than rejected.
+Do not hand the author a list of things to email — submissions are not taken
+by email. File the material directly through the intake:
 
-Finally, state what a listing does not mean: it is not an endorsement and not a
-security guarantee. If the author wants the plugin install-checked first,
+```bash
+python3 scripts/submit.py \
+  --repo "owner/repo" \
+  --tagline "<one sentence, max 200 characters>" \
+  --install "<exact install command>" \
+  --category <slug> \
+  --notes "<credentials, paid endpoints, unusual permissions>" \
+  --listing-file <path to the listing markdown above>
+```
+
+For a correction to an existing listing, add `--kind correction`.
+
+The script POSTs to `https://www.alldsh.com/api/submit` (override with
+`ALLDSH_SUBMIT_URL`). The intake re-checks the mechanical items itself — the
+repository must be public, unarchived and carry the `dsh-plugin` topic — and
+answers in JSON:
+
+- `201` with an `issue` URL: filed. Give the author that URL; review happens
+  publicly in that issue, usually within a week, and the verdict stays visible
+  there either way.
+- `409 already_submitted`: an open submission for the repository exists.
+  Report its issue URL and add any new information there instead of refiling.
+- `422 missing_topic`: set the `dsh-plugin` topic on the repository and retry.
+  The other 422 answers (`repo_not_found`, `repo_archived`) name their fix in
+  the same way.
+
+A missing checklist item gets the submission returned with a note during
+review rather than rejected — but the three intake checks above are hard
+gates, so run the checklist before filing, not after.
+
+Finally, state what a listing does not mean: it is not an endorsement and not
+a security guarantee. If the author wants the plugin install-checked first,
 `$vet-dsh-plugin` reviews the code read-only.

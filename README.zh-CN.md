@@ -12,7 +12,7 @@
 | --- | --- | --- |
 | `find-dsh-plugins` | 把一句能力需求变成一份来自本站目录的短名单，附安装命令与验证等级。 | `使用 $find-dsh-plugins 帮我找能做截图识别的 DSH 插件。` |
 | `vet-dsh-plugin` | 安装前的只读审查：条目核查了什么、没核查什么、仓库在该提交上实际做了什么。 | `使用 $vet-dsh-plugin 在我安装 liustack/modlens 之前审查它。` |
-| `submit-dsh-plugin` | 按收录清单检查一个仓库，并产出可提交（或用于纠正已有条目）的材料。 | `使用 $submit-dsh-plugin 帮我把 https://github.com/owner/repo 整理成收录提交。` |
+| `submit-dsh-plugin` | 按收录清单检查一个仓库、产出条目材料，并通过提交 API 直接递交——评审仍是人工的、公开的。 | `使用 $submit-dsh-plugin 帮我提交 https://github.com/owner/repo 收录。` |
 
 三个技能只读同一个目录端点，都不会回退到 GitHub 搜索、网页搜索、npm 或其它插件市场——一个会悄悄扩大自己来源的索引，无法对覆盖范围作出有边界的陈述。目录里没有匹配项时，技能会直接说明。
 
